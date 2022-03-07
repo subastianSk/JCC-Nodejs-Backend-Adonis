@@ -22,13 +22,13 @@
 // "Selamat datang di Dunia Werewolf, Junaedi"
 // "Halo Werewolf Junaedi, Kamu akan memakan mangsa setiap malam!"
 
-var nama = "John"
-var peran = ""
+var nama = "John";
+var peran = "";
 
 if (!nama) {
     console.log("Nama harus diisi");
 } else if (nama == 'John' && peran == "") {
-    console.log("Halo John Pilih peranmu untuk memulai game!")
+    console.log("Halo John, Pilih peranmu untuk memulai game!")
 } else if (nama == 'Jane' && peran == "Penyihir") {
     console.log("Selamat datang di Dunia Werewolf, Jane");
     console.log("Halo Penyihir Jane, kamu dapat melihat siapa yang menjadi werewolf!");
