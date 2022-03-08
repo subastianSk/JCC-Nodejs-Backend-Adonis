@@ -22,23 +22,25 @@
 // "Selamat datang di Dunia Werewolf, Junaedi"
 // "Halo Werewolf Junaedi, Kamu akan memakan mangsa setiap malam!"
 
-var nama = "John";
-var peran = "";
+var nama = "Jenita";
+var peran = "Guard";
 
-if (!nama) {
-    console.log("Nama harus diisi");
-} else if (nama == 'John' && peran == "") {
-    console.log("Halo John, Pilih peranmu untuk memulai game!")
-} else if (nama == 'Jane' && peran == "Penyihir") {
-    console.log("Selamat datang di Dunia Werewolf, Jane");
-    console.log("Halo Penyihir Jane, kamu dapat melihat siapa yang menjadi werewolf!");
+try {
+    if (!nama) {
+        throw ("Nama harus diisi");
+    } else if (!peran) {
+        throw (`Hallo ${nama},Pilih peranmu untuk memulai game!`);
+    }
 
-} else if (nama == 'Jenita' && peran == "Guard") {
-    console.log("Selamat datang di Dunia Werewolf, Jenita");
-    console.log("Halo Guard Jenita, kamu akan membantu melindungi temanmu dari serangan werewolf.");
+    console.log(`Selamat datang di Dunia Werewolf, ${nama}`);
 
-} else if (nama == 'Junaedi' && peran == "Werewolf") {
-    console.log("Selamat datang di Dunia Werewolf, Junaedi");
-    console.log("Halo Werewolf Junaedi, Kamu akan memakan mangsa setiap malam!");
-
+    if (peran == "Penyihir") {
+        console.log(`Halo Penyihir ${nama}, kamu dapat melihat siapa yang menjadi werewolf!`)
+    } else if (peran == "Guard") {
+        console.log(`Halo Guard ${nama}, kamu akan membantu melindungi temanmu dari serangan werewolf.`)
+    } else if (peran == "Warewolf") {
+        console.log(`Halo Werewolf ${nama}, Kamu akan memakan mangsa setiap malam!`)
+    }
+} catch (e) {
+    console.error(e)
 }
