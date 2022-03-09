@@ -1,8 +1,8 @@
 // No.1
 function loopWhile() {
     console.log("LOOPING PERTAMA");
-    i = 1;
-    while (i < 20) {
+    i = 2;
+    while (i <= 20) {
         console.log(i + " - I love coding");
         i += 2;
     }
