@@ -28,22 +28,24 @@ function arrayToObject(input) {
                     break;
             }
         }
+        var objBiodata = JSON.stringify(biodata)
         // Memanggil Object
-        console.log(`${i + 1}. ${biodata.firstName} ${biodata.lastName}: `, biodata);
+        console.log(`${i + 1}. ${biodata.firstName} ${biodata.lastName}:  ${objBiodata}`);
     }
 }
 
-var people = [
-    ["Bruce", "Banner", "male", 1975],
-    ["Natasha", "Romanoff", "female"]
-];
-arrayToObject(people);
+// var people = [
+//     ["Bruce", "Banner", "male", 1975],
+//     ["Natasha", "Romanoff", "female"]
+// ];
+// arrayToObject(people);
 
-var people2 = [
-    ["Tony", "Stark", "male", 1980],
-    ["Pepper", "Pots", "female", 2023]
-];
-arrayToObject(people2);
+// var people2 = [
+//     ["Tony", "Stark", "male", 1980],
+//     ["Pepper", "Pots", "female", 2023]
+// ];
+// arrayToObject(people2);
+arrayToObject([])
 
 // ============ SOAL NO. 2 ============
 console.log('============ SOAL NO. 2 ============');
