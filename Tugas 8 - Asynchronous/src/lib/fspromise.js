@@ -28,6 +28,7 @@ export const addSiswa = async (siswa, trainer) => {
     let dataRead = await fspromise.readFile(path);
     let realData = JSON.parse(dataRead);
     let indexTrainer = realData.findIndex((a) => a.name == trainer);
+    console.log(indexTrainer)
     if (realData[indexTrainer].role === "trainer") {
         if (!realData[indexTrainer].students) {
             realData[indexTrainer].students = [{
