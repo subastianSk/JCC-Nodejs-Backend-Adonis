@@ -1,96 +1,207 @@
-const fspromise = require('fs/promises');
+const fs = require('fs')
 
-class Karyawan {
-    static async register(req, res) {
-        let {
-            name,
-            password,
-            role
-        } = {
-            ...req.body
-        };
-        let newUser = {
-            name,
-            password,
-            role,
-            isLogin: false
-        };
-        let readData = await fspromise.readFile('data.json');
-        let realData = JSON.parse(readData);
-        let updated = {
-            ...realData,
-            data: [...realData.data, newUser]
-        };
-        await fspromise.writeFile('data.json', JSON.stringify(updated));
-        res.status(201).json({
-            message: 'Berhasil register'
-        });
-    }
-
-    static async karyawan(req, res) {
-        let readData = await fspromise.readFile('data.json');
-        let realData = JSON.parse(readData);
-        res.status(200).json({
-            message: 'Berhasil get karyawan',
-            data: realData.data,
-        });
-    }
-
-    static async login(req, res) {
-        let readData = await fspromise.readFile('data.json');
-        let realData = JSON.parse(readData);
-        let {
-            name,
-            password
-        } = {
-            ...req.body
-        };
-        let checkname = realData.data.find((a) => a.name === name);
-        let checkpassword = realData.data.find((a) => a.password === password);
-        if (checkname && checkpassword) {
-            checkname.isLogin = true;
-            await fspromise.writeFile('data.json', JSON.stringify(realData));
-            res.status(201).json({
-                message: 'Berhasil login'
-            });
-        } else {
-            res.status(400).json({
-                message: 'Gagal login'
-            });
-        }
-    }
-
-    static async addSiswa(req, res) {
-        let readData = await fspromise.readFile('data.json');
-        let realData = JSON.parse(readData);
-        let trainer = req.params.name.toLowerCase();
-        let siswa = req.body;
-        let admin = realData.data.find((x) => x.role === "admin");
-        let cekLogin = realData.data.reduce((sum, el) => sum + el.isLogin, 0)
-        let cariTrainer = realData.data.find(
-            (x) => x.name.toLowerCase() === trainer && x.role === 'trainer'
-        );
-        if (!cariTrainer.students) cariTrainer.students = [];
-        cariTrainer.students = [...cariTrainer.students, {
-            ...siswa
-        }];
-        if (admin.isLogin === true) {
-            if (cekLogin === 1) {
-                await fspromise.writeFile('data.json', JSON.stringify(realData));
-                res.status(201).json({
-                    message: 'Berhasil add siswa'
-                });
+class UserController {
+    //Realease 0
+    static register(req, res) {
+        fs.readFile('data.json', (err, data) => {
+            if (err) {
+                res.status(400).json({
+                    "errors": "error membaca data"
+                })
             } else {
-                res.status(200).json({
-                    message: 'Lebih dari 1 user login'
-                });
+                let allreadyData = JSON.parse(data)
+                let {
+                    users
+                } = allreadyData
+                let dataLogin = {
+                    isLogin: false
+                }
+                let {
+                    isLogin
+                } = dataLogin
+                let {
+                    name,
+                    password,
+                    role
+                } = req.body
+                let count = 0;
+                if (role == "admin") {
+                    let i;
+                    for (i = 0; i < users.length; i++) {
+                        if (users[i].role == "admin") {
+                            count++;
+                        }
+                    }
+                }
+                console.log(allreadyData)
+                if (count == 0) {
+                    let newUsers = {
+                        name,
+                        password,
+                        role,
+                        isLogin
+                    }
+                    users.push(newUsers)
+                    let newData = {
+                        ...allreadyData,
+                        users
+                    }
+                    fs.writeFile('data.json', JSON.stringify(newData), (err) => {
+                        if (err) {
+                            res.status(400).json({
+                                "errors": "error menyimpan data"
+                            })
+                        } else {
+                            res.status(201).json({
+                                message: "Berhasil register"
+                            })
+                        }
+                    })
+                    // res.send({
+                    //     "message": "Berhasil register"
+                    // });
+                } else {
+                    res.send({
+                        "message": "Role admin telah terdaftar"
+                    });
+                }
             }
-        } else {
-            res.status(200).json({
-                message: 'Admin harus login!'
-            });
-        }
+        })
+    }
+
+    //Release 1
+    static showAll(req, res) {
+        fs.readFile('data.json', (err, data) => {
+            if (err) {
+                res.status(400).json({
+                    "errors": "error membaca data"
+                })
+            } else {
+                let realData = JSON.parse(data)
+                res.status(200).json({
+                    "message": "Berhasil get data users",
+                    data: realData.users
+                })
+            }
+        })
+    }
+
+    //Release 2
+    static login(req, res) {
+        fs.readFile('data.json', (err, data) => {
+            if (err) {
+                res.status(400).json({
+                    "message": "Tidak berhasil login"
+                })
+            } else {
+                let allreadyData = JSON.parse(data)
+                let {
+                    users
+                } = allreadyData
+                let {
+                    name,
+                    password
+                } = req.body
+                let index = users.findIndex(item => item.name == name)
+                let i, count = 0;
+                for (i = 0; i < users.length; i++) {
+                    if (users[i].isLogin == true) {
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    if (index !== -1) {
+                        if (users[index].name == name && users[index].password == password) {
+                            users[index].isLogin = true;
+                        } else {
+                            res.status(400).json({
+                                "message": "Password salah"
+                            })
+                        }
+                    } else {
+                        res.status(400).json({
+                            "message": "Data tidak ditemukan"
+                        })
+                    }
+                    let newData = {
+                        ...allreadyData,
+                        users
+                    }
+                    fs.writeFile('data.json', JSON.stringify(newData), (err) => {
+                        if (err) {
+                            res.status(400).json({
+                                "errors": "error menyimpan data"
+                            })
+                        } else {
+                            res.status(201).json({
+                                "message": "Berhasil Login"
+                            })
+                        }
+                    })
+                } else {
+                    res.send({
+                        "message": "Ada akun yang telah login"
+                    });
+                }
+            }
+        })
+    }
+
+    static addSiswa(req, res) {
+        fs.readFile('data.json', (err, data) => {
+            if (err) {
+                res.status(400).json({
+                    "message": "Tidak berhasil menambahkan siswa"
+                })
+            } else {
+                let allreadyData = JSON.parse(data)
+                let {
+                    users
+                } = allreadyData
+                let {
+                    name,
+                    kelas
+                } = req.body
+                let trainerName = req.params.name
+                let indexAdmin = users.findIndex(items => items.isLogin == true && items.role == "admin")
+                let index = users.findIndex(item => item.name == trainerName)
+                if (indexAdmin !== -1) {
+                    if (index !== -1) {
+                        if (users[index]["students"] == undefined) {
+                            users[index]["students"] = []
+                        }
+                        users[index].students.push({
+                            name,
+                            kelas
+                        })
+                    } else {
+                        res.status(400).json({
+                            "message": "Data tidak ditemukan"
+                        })
+                    }
+                } else {
+                    res.status(400).json({
+                        "message": "admin perlu login"
+                    })
+                }
+                let newData = {
+                    ...allreadyData,
+                    users
+                }
+                fs.writeFile('data.json', JSON.stringify(newData), (err) => {
+                    if (err) {
+                        res.status(400).json({
+                            "errors": "error menyimpan data"
+                        })
+                    } else {
+                        res.status(201).json({
+                            "message": "Berhasil add siswa"
+                        })
+                    }
+                })
+            }
+        })
     }
 }
 
-module.exports = Karyawan;
+module.exports = UserController
