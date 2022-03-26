@@ -33,8 +33,16 @@ export default class GenresController {
 
   public async show({ params, response }: HttpContextContract) {
     try {
-      const genres = await Database.from('genres').where('id', params.id).firstOrFail()
-      response.ok({ message: 'success!', data: genres })
+      const genre = await Database.from('genres').where('id', params.id).firstOrFail()
+      const movies = await Database.from('genres')
+      .join('movies', 'genres.id', '=', 'movies.genre_id')
+      .select('movies.id','movies.title','movies.resume','movies.release_date')
+      .where('genres.id', params.id)
+      response.ok({ message: 'success!', data: {
+        id: genre.id,
+        name: genre.name,
+        movies: movies
+      } })
     } catch (err) {
       response.notFound({ message: 'failed', error: err.message })
     }
