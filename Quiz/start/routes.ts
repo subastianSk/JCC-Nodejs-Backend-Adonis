@@ -24,3 +24,4 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 Route.resource('genres', 'GenresController').apiOnly()
+Route.resource('movies', 'MoviesController').apiOnly()
