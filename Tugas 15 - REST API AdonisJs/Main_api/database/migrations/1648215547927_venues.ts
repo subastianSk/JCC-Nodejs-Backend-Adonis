@@ -5,15 +5,14 @@ export default class Venues extends BaseSchema {
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
-      table.string('name').unique().notNullable()
-      table.string('address')
-      table.string('phone').notNullable
-
+      table.increments('id').primary()
+      table.string('name').notNullable()
+      table.string('address').notNullable()
+      table.string('phone').notNullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
-      table.timestamps(true, true);
+       table.timestamps(true,true)
     })
   }
 

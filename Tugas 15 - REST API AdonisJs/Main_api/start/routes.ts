@@ -23,5 +23,5 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.get('/', async () => {
   return { hello: 'world' }
 })
-Route.resource('venues', 'VenuesController').except(['create', 'edit'])
-Route.shallowResource('venues.fields', 'FieldsController').except(['create', 'edit'])
+Route.resource('venues', 'ContactsController').apiOnly()
+Route.resource('venues.fields', 'PostsController').apiOnly()

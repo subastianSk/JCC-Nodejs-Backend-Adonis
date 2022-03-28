@@ -24,21 +24,11 @@ export default class CreateBookingValidator {
 	 *     ])
 	 *    ```
 	 */
+	 
 	public schema = schema.create({
-		name: schema.string(),
-		venueName: schema.string(),
-		bookingDate: schema.date({
-			format: 'dd-MM-yyyy HH:mm'
-		}, [
-			/**
-			 * boleh booking 1 hari sebelum itu maksudnya?
-			 * boleh booking after 24 hours?
-			 * rules.after(24,'hours')
-			 * atau
-			 * boleh booking after today?
-			 * rules.after('today')
-			 */
-			rules.after('today')
+		name: schema.string({},[
+			rules.alpha(),
+			rules.minLength(4)
 		])
 	})
 
@@ -53,5 +43,14 @@ export default class CreateBookingValidator {
 	 * }
 	 *
 	 */
-  public messages = {}
+  	// public messages = {	  
+	// 	'required': 'the {{field}} is required to create new venues',
+	// 	'nama.alpha': 'the {{field}} must be characters without number and symbols',
+	// 	'nama_venue.alpha': 'the {{field}} must be characters without number and symbols',
+	// 	'tanggal_booking.after': 'booking is invalid, you must booking one day before!'
+	// }
+	public messages = {	  
+		'required': 'the {{field}} is required to create new venues',
+		'name.alpha': 'the {{field}} must be characters without number and symbols'
+	}
 }
