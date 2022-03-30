@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
-
+import { BaseModel, belongsTo, column, BelongsTo, HasMany, hasMany} from '@ioc:Adonis/Lucid/Orm'
+import Venue from 'App/Models/Venue';
+import Booking from 'App/Models/Booking';
 export default class Field extends BaseModel {
   @column({ isPrimary: true })
   public id: number
@@ -12,11 +13,17 @@ export default class Field extends BaseModel {
   public type: Array<string> = ['futsal', 'mini soccer', 'basketball']
 
   @column()
-  public venue_id: number
+  public venueId: number
   
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @belongsTo(() => Venue)
+  public venues: BelongsTo<typeof Venue>
+
+  @hasMany(() => Booking)
+  public Bookings: HasMany<typeof Booking>
 }

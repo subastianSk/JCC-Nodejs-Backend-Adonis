@@ -17,14 +17,20 @@ export default class ContactsController {
             return response.status(200).json({message: 'success get venues', data: venuesFiltered })
         }
         // let venues = await Database.from('venues').select('*')
-        let venues = await Venue.all()
+        let venues = await Venue.query().preload('fields')
         return response.status(200).json({message: 'success get venues', data: venues })
     }
 
-    public async store({request, response}: HttpContextContract){
+    public async store({request, response, auth}: HttpContextContract){
         try {
-            await request.validate(CreateContactValidator) 
-            // Quoy builder
+            const data = await request.validate(CreateContactValidator) 
+            const newVenue = await Venue.create(data)
+            //auth
+            await auth.use('api').authenticate()
+            //console.log(auth.use('api').user!)
+            const Id = auth.user?.id
+            console.log(Id)
+            // Query builder
             // let newVenueId = await Database.table('venues').returning('id').insert({
             //     name: request.input('name'),
             //     address: request.input('address'),
@@ -33,15 +39,15 @@ export default class ContactsController {
             // response.created({message: 'created', newId: newVenueId})
             
             //Lucid Orm
-            let newVenue = new Venue();
-            newVenue.name = request.input('name')
-            newVenue.address = request.input('address')
-            newVenue.phone = request.input('phone')
+            // let newVenue = new Venue();
+            // newVenue.name = request.input('name')
+            // newVenue.address = request.input('address')
+            // newVenue.phone = request.input('phone')
+            // await newVenue.save()
 
-            await newVenue.save()
-            response.created({message: 'created'})
+            response.created({message: 'venues is created', data: newVenue})
         } catch (error) {
-            response.unprocessableEntity({error: error.messages})
+            response.unprocessableEntity({message: error.message})
         }
     }
 

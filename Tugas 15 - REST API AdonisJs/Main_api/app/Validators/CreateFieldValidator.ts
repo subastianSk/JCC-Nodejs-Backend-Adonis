@@ -1,7 +1,7 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
-export default class CreateContactValidator {
+//NA.76cnEfDycVde_rpf4gtjiJE-YMtHvjiDCMd9bRBALz4nhh_C1VajmNnkax0g
+export default class CreateFieldValidator {
   constructor (protected ctx: HttpContextContract) {
   }
 
@@ -24,16 +24,14 @@ export default class CreateContactValidator {
 	 *     ])
 	 *    ```
 	 */
-  	public schema = schema.create({
+	 
+	public schema = schema.create({
 		name: schema.string({},[
 			rules.minLength(4)
-		]),
-		address: schema.string({},[
-			rules.minLength(5)
-		]),
-		phone: schema.string({}, [
-			rules.mobile()
 		])
+		// type: schema.enum(
+		// 	['futsal', 'mini soccer', 'basketball'] as const
+		// )
 	})
 
 	/**
@@ -47,8 +45,13 @@ export default class CreateContactValidator {
 	 * }
 	 *
 	 */
-	public messages = {
-		'required': 'the {{field}} is required to create new venues',
-		'phone.mobile': 'phone is invalid'
+  	// public messages = {	  
+	// 	'required': 'the {{field}} is required to create new venues',
+	// 	'nama.alpha': 'the {{field}} must be characters without number and symbols',
+	// 	'nama_venue.alpha': 'the {{field}} must be characters without number and symbols',
+	// 	'tanggal_booking.after': 'booking is invalid, you must booking one day before!'
+	// }
+	public messages = {	  
+		'required': 'the {{field}} is required to create new venues'
 	}
 }
