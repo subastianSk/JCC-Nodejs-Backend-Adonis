@@ -30,14 +30,28 @@ Route.get('/', async () => {
 // Route.get('/venues/:id', 'ContactsController.show').as('venues.show')
 // Route.put('/venues/:id', 'ContactsController.update').as('venues.update')
 // Route.delete('/venues/:id', 'ContactsController.destroy').as('venues.destroy')
-Route.resource('venues', 'ContactsController').apiOnly()
-//.middleware({'store': ['auth']})
-Route.resource('venues.fields', 'PostsController').apiOnly()
-//.middleware({'store': ['auth']})
-Route.post('/register', 'AuthController.register').as('auth.register')
-Route.post('/login', 'AuthController.login').as('auth.login')
+// Route.resource('venues', 'ContactsController').apiOnly().middleware({'*': ['auth', 'verify']})
+// Route.resource('venues.fields', 'PostsController').apiOnly()
 //Route.post('/bookings', 'BookingsController.booking').as('contacts.booking')
-//.middleware(['auth'])
-Route.post('/fields/:id/bookings', 'BookingsController.booking').as('fields.booking').middleware(['auth'])
-Route.get('/bookings/:id', 'BookingsController.show').as('bookings.show').middleware(['auth'])
-Route.put('/bookings/:id', 'BookingsController.join').as('bookings.join').middleware(['auth'])
+// Route.post('/fields/:id/bookings', 'BookingsController.booking').as('fields.booking').middleware(['auth'])
+// Route.get('/bookings/:id', 'BookingsController.show').as('bookings.show').middleware(['auth'])
+// Route.put('/bookings/:id', 'BookingsController.join').as('bookings.join').middleware(['auth'])
+
+Route.group(() =>{
+  Route.group(() =>{
+    Route.group(() =>{
+      Route.resource('venues', 'ContactsController').apiOnly()
+      Route.resource('venues.fields', 'PostsController').apiOnly()
+    }).middleware(['role'])
+    
+    Route.group(() =>{
+      Route.post('/fields/:id/bookings', 'BookingsController.booking').as('fields.booking')
+      Route.get('/bookings/:id', 'BookingsController.show').as('bookings.show')
+      Route.put('/bookings/:id', 'BookingsController.join').as('bookings.join')
+    })
+
+  }).middleware(['auth', 'verify'])
+  Route.post('/register', 'AuthController.register').as('auth.register')
+  Route.post('/login', 'AuthController.login').as('auth.login')
+  Route.post('/verifikasi-otp', 'AuthController.otpConfirmation').as('auth.otpVerify')
+}).prefix('/api/v1')

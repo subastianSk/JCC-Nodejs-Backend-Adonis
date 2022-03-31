@@ -27,7 +27,14 @@ export default class User extends BaseModel {
 
   @column()
   public rememberMeToken?: string
+  
+  @column()
+  public isVerified: boolean
 
+  @column()
+  public role: string
+  //public role: Array<string> = ['user', 'owner']
+  
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
